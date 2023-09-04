@@ -172,3 +172,14 @@ SPIRV-Cross is a practical tool and library for performing reflection on SPIR-V 
 
 [goto github repo](https://github.com/KhronosGroup/SPIRV-Cross)
 
+
+## 26. asl
+A compact C++ cross-platform library including JSON, XML, HTTP, Sockets, WebSockets, threads, processes, logs, file system, CSV, INI files, etc
+
+[goto github repo](https://github.com/aslze/asl)
+
+
+## 27. stxxl
+STXXL: Standard Template Library for Extra Large Data Sets
+
+[goto github repo](https://github.com/stxxl/stxxl)
