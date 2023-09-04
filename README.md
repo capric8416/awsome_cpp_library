@@ -154,3 +154,21 @@ Dear ImGui: Bloat-free Graphical User interface for C++ with minimal dependencie
 
 [goto github repo](https://github.com/ocornut/imgui)
 
+
+## 23. bgfx
+Cross-platform, graphics API agnostic, "Bring Your Own Engine/Framework" style rendering library
+
+[goto github repo](https://github.com/bkaradzic/bgfx)
+
+
+## 24. libplacebo
+libplacebo is, in a nutshell, the core rendering algorithms and ideas of mpv rewritten as an independent library
+
+[goto github repo](https://github.com/haasn/libplacebo)
+
+
+## 25. SPIRV-Cross
+SPIRV-Cross is a practical tool and library for performing reflection on SPIR-V and disassembling SPIR-V back to high level languages
+
+[goto github repo](https://github.com/KhronosGroup/SPIRV-Cross)
+
