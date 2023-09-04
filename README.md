@@ -76,6 +76,7 @@ A complete, cross-platform solution to record, convert and stream audio and vide
 `vcpkg install ffmpeg`
 
 [goto github repo](https://github.com/FFmpeg/FFmpeg)
+
 [build ffmpeg for windows](https://github.com/ShiftMediaProject/FFmpeg)
 
 
@@ -89,6 +90,7 @@ open source multimedia framework
 Command line video player (lib)
 
 [goto github repo](https://github.com/mpv-player/mpv)
+
 [build mpv for windows](https://github.com/shinchiro/mpv-winbuild-cmake)
 
 ## 13. bshoshany-thread-pool
