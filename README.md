@@ -107,7 +107,7 @@ NVIDIA 2D Image and Signal Processing Performance Primitives (NPP)
 [goto libnpp doc](https://docs.nvidia.com/cuda/npp/index.html)
 
 
-## 25. nvJPEG
+## 15. nvJPEG
 GPU-accelerated JPEG decoder, encoder and transcoder
 
 [goto nvjpeg doc](https://developer.nvidia.com/nvjpeg)
@@ -128,7 +128,7 @@ simd base64 encoder and decoder
 ## 18. folly
 An open-source C++ library developed and used at Facebook
 
-[goto github repo]](https://github.com/facebook/folly)
+[goto github repo](https://github.com/facebook/folly)
 
 
 ## 19. boost
