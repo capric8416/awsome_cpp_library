@@ -171,14 +171,14 @@ JSON序列化结果通常会更大，因为它需要将整数表示为文本。
 # 三、Protocol Buffers定义、序列化、反序列化C++示例
 
 下面是一个示例 Protocol Buffers `.proto` 文件定义一个 `Person` 结构，包括 `name` 和 `age` 两个属性：
-
+```proto
     syntax = "proto3";
     
     message Person {
       string name = 1;
       int32 age = 2;
     }
-
+```
 在这个示例中，我们使用 Protocol Buffers 的 proto3 语法定义了一个名为 `Person` 的消息类型，它有两个字段：`name` 和 `age`，分别是字符串类型和整数类型。
 
 接下来，您可以使用 Protocol Buffers 编译器生成 C++ 绑定代码。以下是生成 C++ 代码的命令：
@@ -188,7 +188,7 @@ JSON序列化结果通常会更大，因为它需要将整数表示为文本。
 请将 `your\_proto\_file.proto` 替换为包含上述 `Person` 定义的实际文件名。运行此命令后，它将在当前目录中生成一个名为 `your\_proto\_file.pb.cc` 和 `your\_proto\_file.pb.h` 的文件，其中包含了 C++ 绑定代码。
 
 然后，您可以在您的 C++ 项目中包含生成的头文件 `your\_proto\_file.pb.h`，并使用 `Person` 结构进行操作。以下是一个示例 C++ 代码，用于创建和使用 `Person` 对象：
-
+```cpp
     #include <iostream>
     #include "your_proto_file.pb.h"
     
@@ -212,7 +212,7 @@ JSON序列化结果通常会更大，因为它需要将整数表示为文本。
     
         return 0;
     }
-
+```
 在这个示例中，我们首先创建一个 `Person` 对象，设置其属性，然后将其序列化为字符串。接着，我们反序列化该字符串以获取一个新的 `Person` 对象，并访问其属性。
 
 确保根据您的实际项目配置编译器和链接器，以便正确使用 Protocol Buffers 的 C++ 绑定代码。
@@ -301,17 +301,17 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 这是最常见的 RPC 类型，客户端发送一个请求到服务器，从服务器获取一个响应，就像常规的函数调用。
 
 **.proto 定义示例**:
-
+```proto
     service MyService {
       rpc SimpleMethod(Request) returns (Response);
     }
-
+```
 **客户端伪代码**:
-
+```cpp
     Request request;
     Response response;
     response = client.SimpleMethod(request);
-
+```
 ### 2. 服务器流 RPC（Server streaming RPC）
 
 ![image](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/54Lq3e4WkbWRl7Ed/img/d7ad594f-f919-42b5-b8bb-f8357cf75ff1.png)
@@ -319,20 +319,20 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 客户端发送一个请求到服务器，获取一个流以读取一系列消息。客户端从返回的流中读取，直到没有更多消息为止。
 
 **.proto 定义示例**:
-
+```proto
     service MyService {
       rpc ServerStreamingMethod(Request) returns (stream Response);
     }
-
+```
 **客户端伪代码**:
-
+```cpp
     Request request;
     Response response;
     auto stream = client.ServerStreamingMethod(request);
     while (stream >> response) {
       // 处理响应
     }
-
+```
 ### 3. 客户端流 RPC（Client streaming RPC）
 
 ![image](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/54Lq3e4WkbWRl7Ed/img/a51aedce-4e50-40fc-88a9-7b6765aec08d.png)
@@ -340,13 +340,13 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 客户端写入一系列消息并发送到服务器，使用提供的流。一旦客户端完成消息写入，它等待服务器读取这些消息并返回响应。
 
 **.proto 定义示例**:
-
+```proto
     service MyService {
       rpc ClientStreamingMethod(stream Request) returns (Response);
     }
-
+```
 **客户端伪代码**:
-
+```cpp
     Request request1, request2;
     Response response;
     auto stream = client.ClientStreamingMethod();
@@ -357,7 +357,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
     stream.Close();
     response = stream.Receive();
-
+```
 ### 4. 双向流 RPC（Bidirectional streaming RPC）
 
 ![image](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/54Lq3e4WkbWRl7Ed/img/61a42477-5eeb-4f76-b160-7e59ca2e2993.png)
@@ -365,13 +365,13 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 客户端和服务器都可以读写并且交换消息使用他们的流。这两个流操作独立，所以客户端和服务器能够按照他们喜欢的任意顺序读写，例如，服务器可以等待所有客户端消息，之后再发送出去。
 
 **.proto 定义示例**:
-
+```proto
     service MyService {
       rpc BiDirectionalStreamingMethod(stream Request) returns (stream Response);
     }
-
+```
 **客户端伪代码**:
-
+```cpp
     Request request1, request2;
     Response response;
     auto stream = client.BiDirectionalStreamingMethod();
@@ -386,7 +386,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     }
     
     stream.Close();
-
+```
 这四种模式为 gRPC 提供了强大的通信灵活性，使其可以满足各种应用程序和系统的需求。
 
 # 六、gRPC一元请求示例
@@ -394,7 +394,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 以下是一个使用 gRPC C++ 的一元请求示例，其中客户端调用一个名为 "Hello" 的服务，服务器返回 "World"。
 
 首先，您需要创建一个 `.proto` 文件来定义服务和消息类型。在这个示例中，我们将创建一个名为 `HelloService` 的服务，其中包含一个名为 `SayHello` 的方法：
-
+```proto
     syntax = "proto3";
     
     service HelloService {
@@ -408,7 +408,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     message HelloResponse {
       string message = 1;
     }
-
+```
 接下来，使用 Protocol Buffers 编译器生成 C++ 代码：
 
     protoc --grpc_out=. --cpp_out=. your_proto_file.proto
@@ -416,7 +416,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 然后，您可以编写客户端和服务器的代码。
 
 ### gRPC 服务器示例：
-
+```cpp
     #include <iostream>
     #include <grpcpp/grpcpp.h>
     #include "your_proto_file.grpc.pb.h"
@@ -444,9 +444,9 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
         return 0;
     }
-
+```
 ### gRPC 客户端示例：
-
+```cpp
     #include <iostream>
     #include <grpcpp/grpcpp.h>
     #include "your_proto_file.grpc.pb.h"
@@ -474,7 +474,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
         return 0;
     }
-
+```
 请确保将 `your\_proto\_file.proto` 替换为您自己的 `.proto` 文件名称，然后使用上述步骤编译和运行服务器和客户端代码。这个示例中的服务器接收客户端的名字，并返回包含 "Hello, " 加上名字的消息。
 
 # 七、gRPC客户端流示例
@@ -482,7 +482,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 以下是一个使用 gRPC C++ 的客户端流示例，客户端不停地发送当前日期时间给服务器。
 
 首先，您需要创建一个 `.proto` 文件来定义服务和消息类型。在这个示例中，我们将创建一个名为 `DateTimeService` 的服务，其中包含一个名为 `StreamDateTime` 的方法：
-
+```proto
     syntax = "proto3";
     
     service DateTimeService {
@@ -496,7 +496,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     message DateTimeResponse {
       string datetime = 1;
     }
-
+```
 接下来，使用 Protocol Buffers 编译器生成 C++ 代码：
 
     protoc --grpc_out=. --cpp_out=. your_proto_file.proto
@@ -504,7 +504,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 然后，您可以编写客户端和服务器的代码。
 
 ### gRPC 服务器示例：
-
+```cpp
     #include <iostream>
     #include <grpcpp/grpcpp.h>
     #include <chrono>
@@ -545,9 +545,9 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
         return 0;
     }
-
+```
 ### gRPC 客户端示例：
-
+```cpp
     #include <iostream>
     #include <grpcpp/grpcpp.h>
     #include "your_proto_file.grpc.pb.h"
@@ -577,7 +577,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
         return 0;
     }
-
+```
 请确保将 `your\_proto\_file.proto` 替换为您自己的 `.proto` 文件名称，然后使用上述步骤编译和运行服务器和客户端代码。在此示例中，服务器会不断地向客户端发送当前日期时间，客户端会接收并打印这些时间信息。客户端和服务器之间使用流来实现数据的持续传输。
 
 # 八、gRPC服务流示例
@@ -585,7 +585,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 以下是一个使用 gRPC C++ 的服务端流示例，服务器不停地向客户端发送当前日期时间。
 
 首先，您需要创建一个 `.proto` 文件来定义服务和消息类型。在这个示例中，我们将创建一个名为 `DateTimeService` 的服务，其中包含一个名为 `StreamDateTime` 的方法：
-
+```proto
     syntax = "proto3";
     
     service DateTimeService {
@@ -599,7 +599,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     message DateTimeResponse {
       string datetime = 1;
     }
-
+```
 接下来，使用 Protocol Buffers 编译器生成 C++ 代码：
 
     protoc --grpc_out=. --cpp_out=. your_proto_file.proto
@@ -607,7 +607,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 然后，您可以编写客户端和服务器的代码。
 
 ### gRPC 服务器示例：
-
+```cpp
     #include <iostream>
     #include <grpcpp/grpcpp.h>
     #include <chrono>
@@ -648,9 +648,9 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
         return 0;
     }
-
+```
 ### gRPC 客户端示例：
-
+```cpp
     #include <iostream>
     #include <grpcpp/grpcpp.h>
     #include "your_proto_file.grpc.pb.h"
@@ -680,7 +680,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
         return 0;
     }
-
+```
 请确保将 `your\_proto\_file.proto` 替换为您自己的 `.proto` 文件名称，然后使用上述步骤编译和运行服务器和客户端代码。在此示例中，服务器会不断地向客户端发送当前日期时间，客户端会接收并打印这些时间信息。服务器和客户端之间使用流来实现数据的持续传输，这是服务端流 gRPC 的工作方式。
 
 # 九、gRPC双向流示例
@@ -688,7 +688,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 以下是一个使用 gRPC C++ 的双向流示例，双方不停地交换自身的计算机名称和当前日期时间。
 
 首先，您需要创建一个 `.proto` 文件来定义服务和消息类型。在这个示例中，我们将创建一个名为 `ComputerInfoService` 的服务，其中包含一个名为 `ExchangeInfo` 的方法：
-
+```proto
     syntax = "proto3";
     
     service ComputerInfoService {
@@ -703,7 +703,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
       string computer_name = 1;
       string datetime = 2;
     }
-
+```
 接下来，使用 Protocol Buffers 编译器生成 C++ 代码：
 
     protoc --grpc_out=. --cpp_out=. your_proto_file.proto
@@ -711,7 +711,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
 然后，您可以编写客户端和服务器的代码。
 
 ### gRPC 服务器示例：
-
+```cpp
     #include <iostream>
     #include <grpcpp/grpcpp.h>
     #include <chrono>
@@ -762,9 +762,9 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
         return 0;
     }
-
+```
 ### gRPC 客户端示例：
-
+```cpp
     #include <iostream>
     #include <grpcpp/grpcpp.h>
     #include <thread>
@@ -825,7 +825,7 @@ gRPC 支持多种通信模式，以下是四种主要的通信模式：
     
         return 0;
     }
-
+```
 请确保将 `your\_proto\_file.proto` 替换为您自己的 `.proto` 文件名称，然后使用上述步骤编译和运行服务器和客户端代码。在此示例中，客户端和服务器之间建立了一个双向流，它们不停地交换计算机名称和当前日期时间。每个消息都包含计算机名称和日期时间信息。
 
 # 十、gRPC使用HTTP/2作为传输协议，将支持HTTP/3和QUIC
@@ -1000,7 +1000,7 @@ QUIC已经被广泛部署，并且逐渐成为Web应用程序和服务的首选�
 请注意，这个示例假定你已经安装了适当的QUIC库（例如，quiche库），并且你的编译环境已经设置好。
 
 **QUIC服务器示例：**
-
+```cpp
     #include <quiche/quiche.h>
     
     int main() {
@@ -1051,9 +1051,9 @@ QUIC已经被广泛部署，并且逐渐成为Web应用程序和服务的首选�
     
         return 0;
     }
-
+```
 **QUIC客户端示例：**
-
+```cpp
     #include <quiche/quiche.h>
     
     int main() {
@@ -1102,7 +1102,7 @@ QUIC已经被广泛部署，并且逐渐成为Web应用程序和服务的首选�
     
         return 0;
     }
-
+```
 请注意，上述示例是一个简化版本，真实的QUIC应用程序可能需要更多的配置和错误处理。你需要根据你的需求来编写完整的服务器和客户端代码，并确保使用正确的QUIC库。同时，你还需要实现日期时间和递增ID的生成和解析逻辑，以便在数据交换中使用。
 
 # 十四、QUIC相比TCP有哪些优势
@@ -1203,7 +1203,7 @@ DPDK通过以下方式提升了数据包处理的性能和效率：
 首先，确保您已经安装和配置了DPDK，并正确初始化了DPDK环境。然后，您可以创建一个基于DPDK的网络应用程序，其中包括QUIC协议。
 
 请注意，以下示例仅用于概念演示，实际实现可能需要更多的细节和错误处理。
-
+```cpp
     #include <iostream>
     #include <thread>
     #include <rte_eal.h>
@@ -1275,7 +1275,7 @@ DPDK通过以下方式提升了数据包处理的性能和效率：
     
         return 0;
     }
-
+```
 在这个示例中，我们首先初始化了DPDK环境，并创建了DPDK端口。然后，在服务器和客户端中，您可以使用DPDK来处理网络数据包，并在QUIC连接上发送日期时间和递增ID。请注意，这只是一个概念示例，实际的实现可能会更加复杂，具体的QUIC库和数据包处理逻辑需要根据您的需求进行选择和开发。
 
 # 十八、使用DPDK-ANS库实现tcp client server通信
@@ -1320,7 +1320,7 @@ DPDK-ANS（DPDK Accelerated Network Stack）的库，它是一个用于实现
 请注意，具体的代码实现和配置会根据你的应用程序需求而有所不同。DPDK-ANS 提供了一些示例代码和文档，可以帮助你入门。
 
 DPDK-ANS 项目的 GitHub 页面可能包含了详细的文档和示例代码，以帮助你开始。在实际实施之前，建议详细研究DPDK-ANS的文档和示例，以确保你的TCP客户端和服务器满足你的性能和功能需求。此外，也可以查找其他类似的开源DPDK TCP库，以找到适合你的项目的最佳解决方案。
-
+```cpp
     #include <rte_eal.h>
     #include <rte_ethdev.h>
     #include <rte_mbuf.h>
@@ -1421,7 +1421,7 @@ DPDK-ANS 项目的 GitHub 页面可能包含了详细的文档和示例代码
     
         return 0;
     }
-
+```
 # 十九、DPDK-ANS架构
 
 librte\_ans：TCP/IP 堆栈静态库。ANS 使用 dpdk mbuf、ring、memzone、mempool、timer、spinlock。所以在 dpdk 和 ANS 之间零拷贝 mbuf。 librte\_anssock：应用程序的 ANS 套接字库，ANS 和应用程序之间的零复制。 librte\_anscli：用于路由/ip/neigh/link 配置的 ANS cli 库。 cli：用于配置 ANS tcp/ip 堆栈的命令。 示例：ANS 应用示例。 测试：带有 ANS 的示例应用程序，用于测试 ANS tcp/ip 堆栈
@@ -1440,6 +1440,8 @@ ANS 初始化； ANS 在容器中运行； Ether，NIC 和 ANS TCP/IP 堆�
 
 x86：broadwell、haswell、ivybridge、knl、sandybridge、westmere 等。 arm：arm64 SoC 和边缘计算机；
 
+server
+```cpp
     #define _GNU_SOURCE
     #include <stdio.h>
     #include <stdlib.h>
@@ -1674,7 +1676,10 @@ x86：broadwell、haswell、ivybridge、knl、sandybridge、westmere 等。 arm
     
         RunServerThread();
     }
-    
+```
+
+http client
+```cpp
 
     #define _GNU_SOURCE
     #include <stdio.h>
@@ -1760,3 +1765,4 @@ x86：broadwell、haswell、ivybridge、knl、sandybridge、westmere 等。 arm
         anssock_close(client_sockfd);
         return 0;
     }
+```
