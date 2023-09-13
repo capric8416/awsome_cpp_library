@@ -6,8 +6,6 @@ C++ Library Manager for Windows, Linux, and MacOS
 
 # awsome_cpp_library
 
-Sure, I can help you add examples for each of the libraries you've listed. Here are the libraries along with some example code or usage instructions where applicable:
-
 ### 01. argparse
 Argument Parser for Modern C++
 ```cpp
