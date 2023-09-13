@@ -853,10 +853,6 @@ int main() {
 
 解码H.265
 ```cpp
-#include <iostream>
-#include <string>
-#include <stdexcept>
-
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -868,164 +864,80 @@ int main() {
     av_register_all();
     avcodec_register_all();
 
-    // Input settings
-    std::string inputFileName = "input.h265";  // Replace with your input H.265 video file name
-    std::string outputFileName = "output.mp4";  // Output file in MP4 format
-
     // Open the input file
-    AVFormatContext* formatContext = nullptr;
-    if (avformat_open_input(&formatContext, inputFileName.c_str(), nullptr, nullptr) != 0) {
-        std::cerr << "Error opening input file." << std::endl;
-        return 1;
+    const char* inputFileName = "input.h265";
+    AVFormatContext* formatContext = avformat_alloc_context();
+    if (avformat_open_input(&formatContext, inputFileName, NULL, NULL) != 0) {
+        std::cerr << "Error opening the input file." << std::endl;
+        return -1;
     }
 
-    if (avformat_find_stream_info(formatContext, nullptr) < 0) {
-        std::cerr << "Error finding stream information." << std::endl;
-        avformat_close_input(&formatContext);
-        return 1;
+    // Find the video stream information
+    if (avformat_find_stream_info(formatContext, NULL) < 0) {
+        std::cerr << "Could not find stream information." << std::endl;
+        return -1;
     }
 
     // Find the video stream
+    AVCodec* codec = NULL;
     int videoStreamIndex = -1;
-    for (unsigned int i = 0; i < formatContext->nb_streams; i++) {
+    for (int i = 0; i < formatContext->nb_streams; i++) {
         if (formatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             videoStreamIndex = i;
+            codec = avcodec_find_decoder(formatContext->streams[i]->codecpar->codec_id);
+            if (codec == NULL) {
+                std::cerr << "Unsupported codec." << std::endl;
+                return -1;
+            }
             break;
         }
     }
 
-    if (videoStreamIndex == -1) {
-        std::cerr << "Error: No video stream found." << std::endl;
-        avformat_close_input(&formatContext);
-        return 1;
-    }
-
-    // Find the codec for H.265/HEVC
-    AVCodec* codec = avcodec_find_decoder(AV_CODEC_ID_HEVC);
-    if (!codec) {
-        std::cerr << "Error: H.265/HEVC decoder not found." << std::endl;
-        avformat_close_input(&formatContext);
-        return 1;
-    }
-
-    // Create a codec context and set parameters
+    // Create a codec context
     AVCodecContext* codecContext = avcodec_alloc_context3(codec);
-    if (!codecContext) {
-        std::cerr << "Error allocating codec context." << std::endl;
-        avformat_close_input(&formatContext);
-        return 1;
-    }
-
     if (avcodec_parameters_to_context(codecContext, formatContext->streams[videoStreamIndex]->codecpar) < 0) {
-        std::cerr << "Error setting codec parameters." << std::endl;
-        avcodec_free_context(&codecContext);
-        avformat_close_input(&formatContext);
-        return 1;
+        std::cerr << "Failed to copy codec parameters to codec context." << std::endl;
+        return -1;
     }
 
     // Open the codec
-    if (avcodec_open2(codecContext, codec, nullptr) < 0) {
-        std::cerr << "Error opening codec." << std::endl;
-        avcodec_free_context(&codecContext);
-        avformat_close_input(&formatContext);
-        return 1;
-    }
-
-    // Open the output file
-    AVFormatContext* outputFormatContext = nullptr;
-    if (avformat_alloc_output_context2(&outputFormatContext, nullptr, nullptr, outputFileName.c_str()) < 0) {
-        std::cerr << "Error creating output format context." << std::endl;
-        avcodec_free_context(&codecContext);
-        avformat_close_input(&formatContext);
-        return 1;
-    }
-
-    if (avio_open(&outputFormatContext->pb, outputFileName.c_str(), AVIO_FLAG_WRITE) < 0) {
-        std::cerr << "Error opening output file." << std::endl;
-        avcodec_free_context(&codecContext);
-        avformat_free_context(outputFormatContext);
-        avformat_close_input(&formatContext);
-        return 1;
-    }
-
-    AVStream* outputVideoStream = avformat_new_stream(outputFormatContext, codec);
-    if (!outputVideoStream) {
-        std::cerr << "Error creating output video stream." << std::endl;
-        avcodec_free_context(&codecContext);
-        avformat_free_context(outputFormatContext);
-        avformat_close_input(&formatContext);
-        return 1;
-    }
-
-    // Copy the codec parameters from the input stream to the output stream
-    avcodec_parameters_copy(outputVideoStream->codecpar, formatContext->streams[videoStreamIndex]->codecpar);
-
-    // Write the output format header
-    if (avformat_write_header(outputFormatContext, nullptr) < 0) {
-        std::cerr << "Error writing output format header." << std::endl;
-        avcodec_free_context(&codecContext);
-        avformat_free_context(outputFormatContext);
-        avformat_close_input(&formatContext);
-        return 1;
+    if (avcodec_open2(codecContext, codec, NULL) < 0) {
+        std::cerr << "Could not open codec." << std::endl;
+        return -1;
     }
 
     // Initialize the packet and frame
-    AVPacket pkt;
-    av_init_packet(&pkt);
-    pkt.data = nullptr;
-    pkt.size = 0;
-
+    AVPacket packet;
+    av_init_packet(&packet);
     AVFrame* frame = av_frame_alloc();
-    if (!frame) {
-        std::cerr << "Error allocating frame." << std::endl;
-        avcodec_free_context(&codecContext);
-        avformat_free_context(outputFormatContext);
-        avformat_close_input(&formatContext);
-        return 1;
+
+    // Decode frames
+    int frameCount = 0;
+    while (av_read_frame(formatContext, &packet) >= 0) {
+        if (packet.stream_index == videoStreamIndex) {
+            if (avcodec_send_packet(codecContext, &packet) == 0) {
+                while (avcodec_receive_frame(codecContext, frame) == 0) {
+                    // You can save or process the decoded frame here
+                    // For example, save the frame as an image
+                    char filename[50];
+                    snprintf(filename, sizeof(filename), "frame%d.jpg", frameCount);
+                    av_write_image_frame(filename, frame);
+                    frameCount++;
+                }
+            }
+        }
+        av_packet_unref(&packet);
     }
 
-    // Initialize the SwsContext for frame conversion if needed
-    SwsContext* swsContext = nullptr;
+    // Clean up
+    avcodec_free_context(&codecContext);
+    av_frame_free(&frame);
+    avformat_close_input(&formatContext);
+    avformat_free_context(formatContext);
 
-    // Decode and write frames
-    while (av_read_frame(formatContext, &pkt) >= 0) {
-        if (pkt.stream_index == videoStreamIndex) {
-            // Decode the frame
-            int ret = avcodec_receive_frame(codecContext, frame);
-            if (ret == 0) {
-                // Convert the frame if needed
-                if (!swsContext) {
-                    swsContext = sws_getContext(
-                        frame->width, frame->height, (AVPixelFormat)frame->format,
-                        frame->width, frame->height, AV_PIX_FMT_YUV420P,
-                        SWS_BILINEAR, nullptr, nullptr, nullptr
-                    );
-                }
+    return 0;
+}
 
-                if (swsContext) {
-                    AVFrame* convertedFrame = av_frame_alloc();
-                    av_image_fill_arrays(
-                        convertedFrame->data, convertedFrame->linesize,
-                        av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, frame->width, frame->height, 1)),
-                        AV_PIX_FMT_YUV420P, frame->width, frame->height, 1
-                    );
-                    sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, convertedFrame->data, convertedFrame->linesize);
-                    av_frame_unref(frame);
-                    av_frame_free(&frame);
-                    frame = convertedFrame;
-                }
-
-                // Encode the frame
-                AVPacket encodedPkt;
-                av_init_packet(&encodedPkt);
-                encodedPkt.data = nullptr;
-                encodedPkt.size = 0;
-                frame->pts = av_frame_get_best_effort_timestamp(frame);
-                avcodec_send_frame(codecContext, frame);
-                ret = avcodec_receive_packet(codecContext, &encodedPkt);
-                if (ret == 0) {
-                    // Write the encoded packet to the output file
-                    av_write_frame(outputFormat
 ```
 
 
