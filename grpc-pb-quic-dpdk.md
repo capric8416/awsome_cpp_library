@@ -2,89 +2,43 @@
 
 **目录**
 
-一、Protocol Buffers简介1
+一、Protocol Buffers简介
 
-1. 数据序列化和反序列化1
+二、Protocol Buffers相比JSON有哪些优势
 
-2. 特点和优势1
+三、Protocol Buffers定义、序列化、反序列化C++示例
 
-3. 如何使用 Protocol Buffers1
+四、gRPC (gRPC Remote Procedure Call) 简介
 
-4. 学习资源1
+五、gRPC四种通信模式
 
-二、Protocol Buffers与JSON对比有哪些优势1
+六、gRPC一元请求示例
 
-1. 性能比较1
+七、gRPC客户端流示例
 
-2. 数据大小比较1
+八、gRPC服务流示例
 
-三、Protocol Buffers定义、序列化、反序列化C++示例1
+九、gRPC双向流示例
 
-四、gRPC (gRPC Remote Procedure Call) 简介1
+十、gRPC使用HTTP/2作为传输协议，将支持HTTP/3和QUIC
 
-1. gRPC 简介1
+十一、gRPC架构
 
-2. gRPC 架构1
+十二、QUIC协议介绍
 
-3. gRPC 使用场景1
+十三、QUIC Server/Client示例
 
-4. gRPC 生态系统1
+十四、QUIC相比TCP有哪些优势
 
-5. 学习资源1
+十五、QUIC相比UDP有哪些优势
 
-五、gRPC四种通信模式1
+十六、DPDK介绍
 
-1. 单项 RPC（Unary RPC）1
+十七、DPDK通信伪码示例
 
-2. 服务器流 RPC（Server streaming RPC）1
+十八、使用DPDK-ANS库实现tcp client server通信
 
-3. 客户端流 RPC（Client streaming RPC）1
-
-4. 双向流 RPC（Bidirectional streaming RPC）1
-
-六、gRPC一元请求示例1
-
-gRPC 服务器示例：1
-
-gRPC 客户端示例：1
-
-七、gRPC客户端流示例1
-
-gRPC 服务器示例：1
-
-gRPC 客户端示例：1
-
-八、gRPC服务流示例1
-
-gRPC 服务器示例：1
-
-gRPC 客户端示例：1
-
-九、gRPC双向流示例1
-
-gRPC 服务器示例：1
-
-gRPC 客户端示例：1
-
-十、gRPC使用HTTP/2作为传输协议，将支持HTTP/3和QUIC1
-
-十一、gRPC架构1
-
-十二、QUIC协议介绍1
-
-十三、QUIC Server/Client示例1
-
-十四、QUIC相比TCP有哪些优势1
-
-十五、QUIC相比UDP有哪些优势1
-
-十六、DPDK介绍1
-
-十七、DPDK通信伪码示例1
-
-十八、使用DPDK-ANS库实现tcp client server通信1
-
-十九、DPDK-ANS架构1
+十九、DPDK-ANS架构
 
 # 一、Protocol Buffers简介
 
@@ -144,7 +98,7 @@ Protocol Buffers 具有以下特点和优势：
 
 Protocol Buffers 是一种强大的数据序列化格式，广泛用于各种应用程序和场景中，以提高数据的效率和可扩展性。
 
-# 二、Protocol Buffers与JSON对比有哪些优势
+# 二、Protocol Buffers相比JSON有哪些优势
 
 Protocol Buffers（ProtoBuf）和 JSON 是两种不同的数据序列化格式，它们在序列化和反序列化性能以及数据大小方面有一些重要的区别。
 
